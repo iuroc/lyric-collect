@@ -1,0 +1,4 @@
+package-lock.json
+go.sum
+node_modules/
+serve/serve.exe

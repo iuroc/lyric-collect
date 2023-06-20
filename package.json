@@ -1,0 +1,20 @@
+{
+	"name": "lyric-collect",
+	"version": "1.0.0",
+	"description": "歌词收藏程序",
+	"scripts": {
+		"dev": "tsc -w",
+		"build": "browserify web/js/index.js -o web/dist/bundle.js && cd serve && go build && serve"
+	},
+	"keywords": [
+		"lyric",
+		"collect"
+	],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/node": "^20.3.1",
+		"browserify": "^17.0.0",
+		"typescript": "^5.1.3"
+	}
+}
