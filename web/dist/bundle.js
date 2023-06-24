@@ -6531,10 +6531,13 @@ var routeGet = function (route) {
         });
         /** 当前页的页码 */
         var nowPage_1;
+        /** 当前正在查看歌词的歌曲 ID */
+        var nowMusicId_1;
         /** 用于歌曲搜索 */
         var searchXhr_1 = new XMLHttpRequest();
         /** 用于歌词获取 */
         var lyricViewXhr_1 = new XMLHttpRequest();
+        lyricViewXhr_1.timeout = 2000;
         searchXhr_1.addEventListener('readystatechange', function () {
             if (searchXhr_1.status == 200 && searchXhr_1.readyState == searchXhr_1.DONE) {
                 var res = JSON.parse(searchXhr_1.responseText);
@@ -6575,12 +6578,16 @@ var routeGet = function (route) {
             }
         });
         var cardClick_1 = function (music) {
+            if (typeof music != 'undefined')
+                nowMusicId_1 = music.id;
+            else
+                console.log('重试中');
             modelLyricView_1.show();
             lyricEle_1.innerHTML = '';
             musicNameEle_1.innerHTML = '';
             loading_1.style.display = 'block';
             lyricViewXhr_1.abort();
-            lyricViewXhr_1.open('GET', config_1.apiConfig.getLyric + '?id=' + music.id);
+            lyricViewXhr_1.open('GET', config_1.apiConfig.getLyric + '?id=' + nowMusicId_1);
             lyricViewXhr_1.send();
         };
         /** 歌词获取完成 */
@@ -6602,6 +6609,7 @@ var routeGet = function (route) {
                 alert(res.msg);
             }
         });
+        lyricViewXhr_1.onerror = lyricViewXhr_1.ontimeout = function () { return cardClick_1(); };
         /**
          * 搜索歌曲
          * @param keyword 搜索关键词

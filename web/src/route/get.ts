@@ -21,10 +21,13 @@ export const routeGet: RouteEvent = (route) => {
         })
         /** 当前页的页码 */
         let nowPage: number
+        /** 当前正在查看歌词的歌曲 ID */
+        let nowMusicId: number
         /** 用于歌曲搜索 */
         const searchXhr = new XMLHttpRequest()
         /** 用于歌词获取 */
         const lyricViewXhr = new XMLHttpRequest()
+        lyricViewXhr.timeout = 2000
         searchXhr.addEventListener('readystatechange', () => {
             if (searchXhr.status == 200 && searchXhr.readyState == searchXhr.DONE) {
                 const res = JSON.parse(searchXhr.responseText) as AjaxRes
@@ -64,13 +67,14 @@ export const routeGet: RouteEvent = (route) => {
                 alert(res.msg)
             }
         })
-        const cardClick = (music: MusicInfo) => {
+        const cardClick = (music?: MusicInfo) => {
+            if (typeof music != 'undefined') nowMusicId = music.id
             modelLyricView.show()
             lyricEle.innerHTML = ''
             musicNameEle.innerHTML = ''
             loading.style.display = 'block'
             lyricViewXhr.abort()
-            lyricViewXhr.open('GET', apiConfig.getLyric + '?id=' + music.id)
+            lyricViewXhr.open('GET', apiConfig.getLyric + '?id=' + nowMusicId)
             lyricViewXhr.send()
         }
         /** 歌词获取完成 */
@@ -92,7 +96,7 @@ export const routeGet: RouteEvent = (route) => {
                 alert(res.msg)
             }
         })
-
+        lyricViewXhr.onerror = lyricViewXhr.ontimeout = () => cardClick()
         /**
          * 搜索歌曲
          * @param keyword 搜索关键词
