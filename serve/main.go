@@ -2,11 +2,15 @@ package main
 
 import (
 	"fmt"
+	"lyric-collect/database"
 	"lyric-collect/route"
 	"net/http"
 )
 
 func main() {
+	conn := database.GetConn()
+	defer conn.Close()
+	database.InitTable(conn)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "../web/index.html")
 	})

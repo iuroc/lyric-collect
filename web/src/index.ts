@@ -1,10 +1,8 @@
-(async () => {
-    await new Promise(() => {
-        const xhr = new XMLHttpRequest()
-        xhr.open('GET', 'https://apee.top')
-        xhr.send()
-        xhr.addEventListener('readystatechange', () => {
-            console.log(xhr.readyState, xhr.status)
-        })
-    })
-})()
+import { Router } from 'apee-router'
+import { loadTemplate } from './template'
+import { routeGet } from './route/get'
+const router = new Router()
+loadTemplate(router)
+router.set(['home', 'search', 'login', 'user', 'add', 'get'])
+router.set('get', routeGet)
+router.start()

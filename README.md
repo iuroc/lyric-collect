@@ -26,6 +26,7 @@
 - 添加、编辑收藏
 - 歌词在线搜索
 - 收藏列表和搜索
+- 歌词评论
 
 ## 数据库设计
 
@@ -63,3 +64,12 @@
 | username    | varchar(255) | 用户名   |
 | token       | varchar(255) | 令牌     |
 | create_time | timestamp    | 创建时间 |
+
+### 评论表 `_comment`
+
+| 字段名      | 类型         | 描述         |
+| ----------- | ------------ | ------------ |
+| collect_id  | int(11)      | 收藏记录 ID  |
+| comment     | varchar(255) | 评论内容     |
+| username    | varchar(255) | 评论者用户名 |
+| create_time | timestamp    | 创建时间     |

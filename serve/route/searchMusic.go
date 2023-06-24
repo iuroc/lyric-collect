@@ -44,7 +44,16 @@ func SearchMusic(w http.ResponseWriter, r *http.Request) {
 	}
 	var response searchResponse
 	json.Unmarshal([]byte(body), &response)
-	musicList := response.Data.List
+	musicList := []musicInfo{}
+	for _, item := range response.Data.List {
+		musicList = append(musicList, musicInfo{
+			Name:   item.Name,
+			Id:     item.Id,
+			Artist: item.Artist,
+			Cover:    item.Pic,
+			Album:  item.Album,
+		})
+	}
 	w.Write(util.MakeSuc("获取成功", musicList))
 }
 
@@ -55,6 +64,15 @@ type searchResponse struct {
 			Id     int    `json:"rid"`
 			Artist string `json:"artist"`
 			Pic    string `json:"pic"`
+			Album  string `json:"album"`
 		} `json:"list"`
 	} `json:"data"`
+}
+
+type musicInfo struct {
+	Name   string `json:"name"`
+	Id     int    `json:"id"`
+	Artist string `json:"artist"`
+	Cover    string `json:"cover"`
+	Album  string `json:"album"`
 }

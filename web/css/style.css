@@ -1,0 +1,38 @@
+.fixed-bottom-tool {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+.nav-title {
+    flex: 1;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.limit-2-line {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.limit-3-line {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
+body {
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.modal-lyric-view .lyric {
+    font-size: 18px;
+    letter-spacing: 1px;
+    line-height: 40px;
+}

@@ -7,10 +7,91 @@
     <title>Lyric Colect</title>
     <link rel="stylesheet" href="https://cdn.staticfile.org/bootstrap/5.2.3/css/bootstrap.min.css">
     <script src="https://cdn.staticfile.org/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        [data-route] {
+            display: none;
+        }
+    </style>
 </head>
 
-<body>
-
+<body ondragstart="return false">
+    <div class="container p-4">
+        <div data-route="home">
+            <div class="d-flex align-items-center mb-4">
+                <h3 class="nav-title mb-0 text-center fw-bold text-sm-start text-success">Lyric Collect</h3>
+                <div class="d-none d-md-block">
+                    <a class="btn btn-outline-danger me-3 shadow-sm" href="#/search">查找记录</a>
+                    <a class="btn btn-outline-secondary me-3 shadow-sm" href="#/get">在线歌词</a>
+                    <a class="btn btn-outline-primary me-3 shadow-sm" href="#/add">添加收藏</a>
+                    <a class="btn btn-outline-success shadow-sm" href="#/user">个人中心</a>
+                </div>
+            </div>
+            <div class="fixed-bottom-tool d-md-none py-4 text-center w-100">
+                <a class="btn btn-danger me-3 shadow-sm" href="#/search">查找<br>记录</a>
+                <a class="btn btn-secondary me-3 shadow-sm" href="#/get">在线<br>歌词</a>
+                <a class="btn btn-primary me-3 shadow-sm" href="#/add">添加<br>收藏</a>
+                <a class="btn btn-success shadow-sm" href="#/user">个人<br>中心</a>
+            </div>
+        </div>
+        <div data-route="login">
+            <nav-back class="mb-4">用户登录</nav-back>
+        </div>
+        <div data-route="user">
+            <nav-back class="mb-4">个人中心</nav-back>
+        </div>
+        <div data-route="add">
+            <nav-back class="mb-4">新增收藏</nav-back>
+        </div>
+        <div data-route="search">
+            <nav-back class="mb-4">查找记录</nav-back>
+        </div>
+        <div data-route="get">
+            <div class="row mb-1">
+                <div class="col-md-6 col-lg-7 col-xl-8 col-xxl-9 mb-3">
+                    <nav-back>在线歌词</nav-back>
+                </div>
+                <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-3 mb-3">
+                    <div class="input-group search-input-group shadow-sm rounded">
+                        <input type="text" class="form-control keyword" placeholder="请输入歌曲名称">
+                        <button class="btn btn-success search">搜索</button>
+                    </div>
+                </div>
+            </div>
+            <div class="music-list row">
+                <div class="lead">1. 输入歌曲名称</div>
+                <div class="lead mb-3">2. 点击搜索按钮或回车</div>
+                <div class="lead">数据来源：酷我音乐</div>
+            </div>
+            <div class="text-end">
+                <button class="btn btn-primary load-more" style="display: none;">加载更多</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade modal-lyric-view" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-md-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title music-name fs-5"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="lyric text-center"></div>
+                    <div class="text-center loading my-3">
+                        <div class="spinner-border text-primary">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-success">复制</button>
+                    <button type="button" class="btn btn-primary">收藏</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/dist/bundle.js"></script>
 </body>
 
 </html>
