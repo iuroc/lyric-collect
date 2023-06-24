@@ -3,7 +3,7 @@ package route
 import (
 	"encoding/json"
 	"fmt"
-	"lyric-collect/serve/util"
+	"lyric-collect/util"
 	"net/http"
 	"net/url"
 	"strconv"

@@ -2,7 +2,7 @@ package route
 
 import (
 	"encoding/json"
-	"lyric-collect/serve/util"
+	"lyric-collect/util"
 	"net/http"
 )
 
