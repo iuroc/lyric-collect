@@ -8,5 +8,6 @@ var router = new apee_router_1.Router();
 (0, template_1.loadTemplate)(router);
 router.set(['home', 'search', 'login', 'user', 'add', 'get']);
 router.set('get', get_1.routeGet);
+router.set('login', login_1.routeLogin);
 router.start();
 (0, login_1.checkToken)();
