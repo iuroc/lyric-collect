@@ -2,4 +2,4 @@ package-lock.json
 go.sum
 node_modules/
 .env
-serve/lyric-collect.exe
+*.exe
