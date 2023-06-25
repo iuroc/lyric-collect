@@ -4,7 +4,7 @@
 	"description": "歌词收藏程序",
 	"scripts": {
 		"dev": "tsc -w",
-		"build": "browserify web/js/index.js -o web/dist/bundle.js && cd serve && go build && lyric-collect"
+		"build": "browserify web/js/index.js -o web/dist/bundle.js && uglifyjs web/dist/bundle.js --mangle --enclose -o web/dist/bundle.min.js && cd serve && go build && lyric-collect"
 	},
 	"keywords": [
 		"lyric",

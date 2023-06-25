@@ -6580,8 +6580,6 @@ var routeGet = function (route) {
         var cardClick_1 = function (music) {
             if (typeof music != 'undefined')
                 nowMusicId_1 = music.id;
-            else
-                console.log('重试中');
             modelLyricView_1.show();
             lyricEle_1.innerHTML = '';
             musicNameEle_1.innerHTML = '';
