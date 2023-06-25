@@ -6488,7 +6488,9 @@ exports.apiConfig = {
     /** 搜索歌曲 */
     searchMusic: '/api/searchMusic',
     /** 获取歌词 */
-    getLyric: '/api/getLyric'
+    getLyric: '/api/getLyric',
+    /** 校验登录 */
+    checkToken: '/api/checkToken'
 };
 exports.default = {
     apiConfig: exports.apiConfig
@@ -6500,13 +6502,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var apee_router_1 = require("apee-router");
 var template_1 = require("./template");
 var get_1 = require("./route/get");
+var login_1 = require("./route/login");
 var router = new apee_router_1.Router();
 (0, template_1.loadTemplate)(router);
 router.set(['home', 'search', 'login', 'user', 'add', 'get']);
 router.set('get', get_1.routeGet);
 router.start();
+(0, login_1.checkToken)();
 
-},{"./route/get":6,"./template":7,"apee-router":2}],6:[function(require,module,exports){
+},{"./route/get":6,"./route/login":7,"./template":8,"apee-router":2}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.routeGet = void 0;
@@ -6646,6 +6650,40 @@ var routeGet = function (route) {
 exports.routeGet = routeGet;
 
 },{"../config":4,"bootstrap":3}],7:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.checkToken = void 0;
+var config_1 = require("../config");
+/** 校验 Token */
+function checkToken(event) {
+    // 初始化页面
+    if (typeof event == 'undefined') {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', config_1.apiConfig.checkToken, false);
+        xhr.send();
+        var res = JSON.parse(xhr.responseText);
+        // 校验成功
+        if (res.code == 200) {
+            localStorage.setItem('hasLogin', 'true');
+            if (location.hash.split('/')[1] == 'login')
+                location.hash = '';
+        }
+        // 校验失败
+        else {
+            location.hash = '#/login';
+            localStorage.removeItem('hasLogin');
+        }
+        // 后期页面切换
+        window.addEventListener('hashchange', function () {
+            if (localStorage.getItem('hasLogin') != 'true'
+                && location.hash.split('/')[1] != 'login')
+                location.hash = '#/login';
+        });
+    }
+}
+exports.checkToken = checkToken;
+
+},{"../config":4}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadTemplate = void 0;

@@ -10,7 +10,7 @@ type ResOption struct {
 	Data interface{}
 }
 
-func MakeRes(code int, msg string, data interface{}) (string, error) {
+func MakeRes(code int, msg string, data interface{}) string {
 	jsonBytes, _ := json.Marshal(struct {
 		Code int         `json:"code"`
 		Msg  string      `json:"msg"`
@@ -21,12 +21,12 @@ func MakeRes(code int, msg string, data interface{}) (string, error) {
 		Data: data,
 	})
 	jsonStr := string(jsonBytes)
-	return jsonStr, nil
+	return jsonStr
 }
 
 // 生成成功响应
 func MakeSuc(msg string, data interface{}) []byte {
-	str, _ := MakeRes(200, msg, data)
+	str := MakeRes(200, msg, data)
 	return []byte(str)
 }
 
@@ -37,7 +37,7 @@ func MakeErr(msg string) []byte {
 
 // 生成异常响应，自定义状态码
 func MakeErrAndCode(msg string, code int) []byte {
-	str, _ := MakeRes(code, msg, nil)
+	str := MakeRes(code, msg, nil)
 	return []byte(str)
 }
 

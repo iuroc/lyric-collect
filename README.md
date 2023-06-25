@@ -73,3 +73,10 @@
 | comment     | varchar(255) | 评论内容     |
 | username    | varchar(255) | 评论者用户名 |
 | create_time | timestamp    | 创建时间     |
+
+## 前端登录校验
+
+- 设置 Cookie-Token
+- 每次初始访问页面，调用 checkToken 接口
+- 每个接口都校验 Token
+- 只要发生 Token 校验失败，立即跳转到 login 页面
