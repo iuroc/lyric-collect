@@ -9,6 +9,7 @@ import (
 // 校验 Token
 func CheckToken(w http.ResponseWriter, r *http.Request) {
 	conn := database.GetConn()
+	defer conn.Close()
 	if result := util.CheckTokenFromRequest(conn, r); !result {
 		res := util.MakeRes(http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized), nil)
 		w.Write([]byte(res))

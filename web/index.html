@@ -34,12 +34,52 @@
                 <a class="btn btn-success shadow-sm" href="#/user">个人<br>中心</a>
             </div>
         </div>
-        <div data-route="login">
+        <div data-route="login" style="max-width: 400px;" class="mx-auto">
             <div class="sub-login">
-                <nav-back class="mb-4" style="display: none;">用户登录</nav-back>
+                <div class="fs-3 fw-bold mb-4 text-center">用户登录</div>
+                <div class="form-floating shadow-sm rounded mb-3">
+                    <input type="text" class="form-control input-username border border-2" placeholder="username">
+                    <label>请输入用户名或邮箱</label>
+                </div>
+                <div class="form-floating shadow-sm rounded mb-3">
+                    <input type="password" autocomplete="new-password"
+                        class="form-control input-password border border-2" placeholder="username">
+                    <label>请输入密码</label>
+                </div>
+                <div class="input-group shadow-sm rounded mb-4">
+                    <input type="text" class="form-control input-vercode border border-2" placeholder="请输入验证码">
+                    <button class="btn btn-success get-vercode">获取验证码</button>
+                </div>
+                <button class="btn btn-primary me-3 px-5 click-login shadow-sm">登录</button>
+                <a class="btn btn-light border shadow-sm" href="#/login/register">注册</a>
             </div>
             <div class="sub-register">
-                <nav-back class="mb-4" style="display: none;">用户注册</nav-back>
+                <div class="fs-3 fw-bold mb-4 text-center">用户注册</div>
+                <div class="form-floating shadow-sm rounded mb-3">
+                    <input type="text" class="form-control input-username border border-2" placeholder="username">
+                    <label>请输入用户名</label>
+                </div>
+                <div class="form-floating shadow-sm rounded mb-3">
+                    <input type="password" autocomplete="new-password"
+                        class="form-control input-password border border-2" placeholder="username">
+                    <label>请输入密码</label>
+                </div>
+                <div class="form-floating shadow-sm rounded mb-3">
+                    <input type="password" autocomplete="new-password"
+                        class="form-control input-repeat-password border border-2" placeholder="username">
+                    <label>请重复输入密码</label>
+                </div>
+                <div class="form-floating shadow-sm rounded mb-3">
+                    <input type="email" autocomplete="new-password" class="form-control input-email border border-2"
+                        placeholder="email">
+                    <label>请输入邮箱地址</label>
+                </div>
+                <div class="input-group rounded shadow-sm mb-4">
+                    <input type="text" class="form-control input-vercode border border-2" placeholder="请输入验证码">
+                    <button class="btn btn-success get-vercode">获取验证码</button>
+                </div>
+                <button class="btn btn-primary me-3 px-5 click-register shadow-sm">注册</button>
+                <a class="btn btn-light border shadow-sm" href="#/login">登录</a>
             </div>
         </div>
         <div data-route="user">

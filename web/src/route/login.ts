@@ -1,6 +1,7 @@
 import { RouteEvent } from 'apee-router'
 import { apiConfig } from '../config'
 import { AjaxRes } from '../types'
+import { checkEmail, checkPassword, checkUsername } from '../util'
 
 /** 校验 Token */
 export function checkToken(event?: HashChangeEvent) {
@@ -45,5 +46,32 @@ export const routeLogin: RouteEvent = (route) => {
     } else {
         subLogin.style.display = 'block'
         subRegister.style.display = 'none'
+    }
+    if (route.status == 0) {
+        route.status = 1
+        const elementGroup = {
+            input: {
+                username: route.dom.querySelector('.input-username') as HTMLInputElement,
+                password: route.dom.querySelector('.input-password') as HTMLInputElement,
+                verCode: route.dom.querySelector('.input-vercode') as HTMLInputElement,
+            },
+            button: {
+                login: route.dom.querySelector('.click-login') as HTMLButtonElement,
+                getVerCode: route.dom.querySelector('.get-vercode') as HTMLButtonElement
+            }
+        }
+        const eventGroup = {
+            getVerCode() {
+                let usernameOremail = elementGroup.input.username.value
+                if (!checkUsername(usernameOremail) && !checkEmail(usernameOremail))
+                    return alert('请输入正确的用户名或邮箱')
+                
+            },
+            login() {
+
+            }
+        }
+        elementGroup.button.getVerCode.addEventListener('click', eventGroup.getVerCode)
+        elementGroup.button.login.addEventListener('click', eventGroup.login)
     }
 }

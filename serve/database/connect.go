@@ -6,12 +6,10 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 )
 
 // 获取数据库连接
 func GetConn() *sql.DB {
-	godotenv.Load(".env")
 	host := os.Getenv("mysql_host")
 	port := os.Getenv("mysql_port")
 	username := os.Getenv("mysql_username")

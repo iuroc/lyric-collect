@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.routeLogin = exports.checkError = exports.checkSuccess = exports.checkToken = void 0;
 var config_1 = require("../config");
+var util_1 = require("../util");
 /** 校验 Token */
 function checkToken(event) {
     // 初始化页面
@@ -45,6 +46,31 @@ var routeLogin = function (route) {
     else {
         subLogin.style.display = 'block';
         subRegister.style.display = 'none';
+    }
+    if (route.status == 0) {
+        route.status = 1;
+        var elementGroup_1 = {
+            input: {
+                username: route.dom.querySelector('.input-username'),
+                password: route.dom.querySelector('.input-password'),
+                verCode: route.dom.querySelector('.input-vercode'),
+            },
+            button: {
+                login: route.dom.querySelector('.click-login'),
+                getVerCode: route.dom.querySelector('.get-vercode')
+            }
+        };
+        var eventGroup = {
+            getVerCode: function () {
+                var usernameOremail = elementGroup_1.input.username.value;
+                if (!(0, util_1.checkUsername)(usernameOremail) && !(0, util_1.checkEmail)(usernameOremail))
+                    return alert('请输入正确的用户名或邮箱');
+            },
+            login: function () {
+            }
+        };
+        elementGroup_1.button.getVerCode.addEventListener('click', eventGroup.getVerCode);
+        elementGroup_1.button.login.addEventListener('click', eventGroup.login);
     }
 };
 exports.routeLogin = routeLogin;

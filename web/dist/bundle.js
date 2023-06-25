@@ -6655,6 +6655,7 @@ exports.routeGet = routeGet;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.routeLogin = exports.checkError = exports.checkSuccess = exports.checkToken = void 0;
 var config_1 = require("../config");
+var util_1 = require("../util");
 /** 校验 Token */
 function checkToken(event) {
     // 初始化页面
@@ -6699,10 +6700,35 @@ var routeLogin = function (route) {
         subLogin.style.display = 'block';
         subRegister.style.display = 'none';
     }
+    if (route.status == 0) {
+        route.status = 1;
+        var elementGroup_1 = {
+            input: {
+                username: route.dom.querySelector('.input-username'),
+                password: route.dom.querySelector('.input-password'),
+                verCode: route.dom.querySelector('.input-vercode'),
+            },
+            button: {
+                login: route.dom.querySelector('.click-login'),
+                getVerCode: route.dom.querySelector('.get-vercode')
+            }
+        };
+        var eventGroup = {
+            getVerCode: function () {
+                var usernameOremail = elementGroup_1.input.username.value;
+                if (!(0, util_1.checkUsername)(usernameOremail) && !(0, util_1.checkEmail)(usernameOremail))
+                    return alert('请输入正确的用户名或邮箱');
+            },
+            login: function () {
+            }
+        };
+        elementGroup_1.button.getVerCode.addEventListener('click', eventGroup.getVerCode);
+        elementGroup_1.button.login.addEventListener('click', eventGroup.login);
+    }
 };
 exports.routeLogin = routeLogin;
 
-},{"../config":4}],8:[function(require,module,exports){
+},{"../config":4,"../util":9}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadTemplate = void 0;
@@ -6735,5 +6761,28 @@ function navBarWithBack(router) {
         ele.replaceWith(box);
     });
 }
+
+},{}],9:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.checkPassword = exports.checkUsername = exports.checkEmail = void 0;
+/** 校验邮箱 */
+function checkEmail(email) {
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+exports.checkEmail = checkEmail;
+/** 校验用户名，4-20 位数字、字母、下划线组成 */
+function checkUsername(username) {
+    var usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
+    return usernameRegex.test(username);
+}
+exports.checkUsername = checkUsername;
+/** 校验密码，6-20 位数字、字母、下划线组合 */
+function checkPassword(password) {
+    var passwordRegex = /^[a-zA-Z0-9_]{6,20}$/;
+    return passwordRegex.test(password);
+}
+exports.checkPassword = checkPassword;
 
 },{}]},{},[5]);
