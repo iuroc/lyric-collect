@@ -35,12 +35,29 @@ func GetVerCode(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	verCode := makeVerCode()
-	if err := sendVerCode(email, verCode); err != nil {
-		w.Write(util.MakeErr("邮件发送失败"))
+	// 判断是否频繁发送
+	if !checkSendAllow(conn, email) {
+		w.Write(util.MakeErr("请勿频繁请求发送验证码"))
 		return
 	}
+	// 生成验证码
+	verCode := makeVerCode()
+	// 发送验证码
+	if err := sendVerCode(email, verCode); err != nil {
+		w.Write(util.MakeErr("邮件发送失败：" + err.Error()))
+		return
+	}
+	// 创建验证码数据库记录
+	insertVerCode(conn, email, verCode)
 	w.Write(util.MakeSuc("验证码已经成功发送到您的邮箱，请注意查收", nil))
+}
+
+// 校验邮件是否允许发送
+func checkSendAllow(conn *sql.DB, email string) bool {
+	var count int
+	// 检查当前邮箱是否在一分钟内发送过验证码
+	conn.QueryRow("SELECT COUNT(*) FROM "+os.Getenv("mysql_table_prefix")+"code WHERE email = ? AND create_time >= (CURRENT_TIMESTAMP - INTERVAL 1 MINUTE)", email).Scan(&count)
+	return count == 0
 }
 
 // 通过【用户名或邮箱】获取邮箱
@@ -53,6 +70,7 @@ func getEmailByUsernameOrEmail(conn *sql.DB, usernameOrEmail string) string {
 	return email
 }
 
+// 发送验证码，并创建数据库记录
 func sendVerCode(to string, verCode string) error {
 	host := os.Getenv("smtp_host")
 	port := os.Getenv("smtp_port")
@@ -84,4 +102,23 @@ func sendVerCode(to string, verCode string) error {
 func makeVerCode() string {
 	rand.Seed(time.Now().UnixNano())
 	return fmt.Sprint(rand.Intn(9000) + 1000)
+}
+
+// 插入验证码记录，并删除该邮箱之前的验证码，以及删除其他过期验证码
+func insertVerCode(conn *sql.DB, email string, verCode string) {
+	// 移除某条验证码记录，并移除过期验证码
+	removeVerCode(conn, email)
+	stmp, _ := conn.Prepare("INSERT INTO " + os.Getenv("mysql_table_prefix") + "code (email, code) VALUES (?, ?)")
+	_, err := stmp.Exec(email, verCode)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// 移除某条验证码记录，并移除过期验证码
+func removeVerCode(conn *sql.DB, email string) {
+	_, err := conn.Exec("DELETE FROM "+os.Getenv("mysql_table_prefix")+"code WHERE email = ? OR create_time < (CURRENT_TIMESTAMP - INTERVAL 5 MINUTE)", email)
+	if err != nil {
+		panic(err)
+	}
 }
