@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkPassword = exports.checkUsername = exports.checkEmail = void 0;
+exports.checkUsernameOrEmail = exports.checkPassword = exports.checkUsername = exports.checkEmail = void 0;
 /** 校验邮箱 */
 function checkEmail(email) {
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,3 +19,8 @@ function checkPassword(password) {
     return passwordRegex.test(password);
 }
 exports.checkPassword = checkPassword;
+/** 校验用户名或邮箱 */
+function checkUsernameOrEmail(usernameOrEmail) {
+    return checkUsername(usernameOrEmail) || checkEmail(usernameOrEmail);
+}
+exports.checkUsernameOrEmail = checkUsernameOrEmail;

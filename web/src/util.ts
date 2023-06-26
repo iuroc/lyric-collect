@@ -15,3 +15,8 @@ export function checkPassword(password: string) {
     const passwordRegex = /^[a-zA-Z0-9_]{6,20}$/
     return passwordRegex.test(password)
 }
+
+/** 校验用户名或邮箱 */
+export function checkUsernameOrEmail(usernameOrEmail: string) {
+    return checkUsername(usernameOrEmail) || checkEmail(usernameOrEmail)
+}

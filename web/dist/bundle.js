@@ -6490,7 +6490,9 @@ exports.apiConfig = {
     /** 获取歌词 */
     getLyric: '/api/getLyric',
     /** 校验登录 */
-    checkToken: '/api/checkToken'
+    checkToken: '/api/checkToken',
+    /** 获取验证码 */
+    getVerCode: '/api/getVerCode'
 };
 exports.default = {
     apiConfig: exports.apiConfig
@@ -6703,27 +6705,101 @@ var routeLogin = function (route) {
     if (route.status == 0) {
         route.status = 1;
         var elementGroup_1 = {
-            input: {
-                username: route.dom.querySelector('.input-username'),
-                password: route.dom.querySelector('.input-password'),
-                verCode: route.dom.querySelector('.input-vercode'),
+            /** 登录页表单元素 */
+            loginForm: {
+                /** 登录页用户名或邮箱 */
+                username: subLogin.querySelector('.input-username'),
+                /** 登录页密码 */
+                password: subLogin.querySelector('.input-password'),
+                /** 登录页验证码输入框 */
+                verCode: subLogin.querySelector('.input-vercode'),
+                /** 点击登录 */
+                login: subLogin.querySelector('.click-login'),
+                /** 登录页点击发送验证码 */
+                getVerCode: subLogin.querySelector('.get-vercode')
             },
-            button: {
-                login: route.dom.querySelector('.click-login'),
-                getVerCode: route.dom.querySelector('.get-vercode')
+            /** 注册页表单元素 */
+            registerForm: {
+                /** 注册页用户名 */
+                username: subRegister.querySelector('.input-username'),
+                /** 注册页密码 */
+                password: subRegister.querySelector('.input-password'),
+                /** 注册页密码重复 */
+                repeatPassword: subRegister.querySelector('.input-repeat-password'),
+                /** 注册页邮箱 */
+                email: subRegister.querySelector('.input-email'),
+                /** 注册页验证码输入框 */
+                verCode: subRegister.querySelector('.input-vercode'),
+                /** 点击注册 */
+                register: subRegister.querySelector('.click-register'),
+                /** 注册页点击发送验证码 */
+                getVerCode: subRegister.querySelector('.get-vercode')
             }
         };
-        var eventGroup = {
-            getVerCode: function () {
-                var usernameOremail = elementGroup_1.input.username.value;
-                if (!(0, util_1.checkUsername)(usernameOremail) && !(0, util_1.checkEmail)(usernameOremail))
+        var eventGroup_1 = {
+            /**
+             * 发送验证码
+             * @param toInput 发件人地址（用户名或邮箱）
+             * @param button 点击发送验证码的按钮
+             * @param login 是否处于登录页
+             */
+            getVerCode: function (to, button, login) {
+                if (!login && !(0, util_1.checkEmail)(to))
+                    return alert('请输入正确的邮箱');
+                if (login && !(0, util_1.checkUsernameOrEmail)(to))
                     return alert('请输入正确的用户名或邮箱');
+                button.setAttribute('disabled', 'disabled');
+                var timer;
+                var changeStatus = function (second) {
+                    if (second == 0)
+                        return endStatus();
+                    button.innerHTML = "".concat(second, " \u79D2");
+                    timer = setTimeout(function () {
+                        changeStatus(second - 1);
+                    }, 1000);
+                };
+                var endStatus = function () {
+                    button.innerHTML = '获取验证码';
+                    button.removeAttribute('disabled');
+                    clearTimeout(timer);
+                };
+                changeStatus(10);
+                var xhr = new XMLHttpRequest();
+                var params = new URLSearchParams();
+                params.set('to', to);
+                params.set('login', String(login));
+                xhr.open('GET', config_1.apiConfig.getVerCode + '?' + params.toString());
+                xhr.send();
+                xhr.addEventListener('readystatechange', function () {
+                    if (xhr.status == 200 && xhr.readyState == xhr.DONE) {
+                        var res = JSON.parse(xhr.responseText);
+                        if (res.code != 200) {
+                            endStatus();
+                            alert(res.msg);
+                        }
+                    }
+                });
             },
             login: function () {
+                var username = elementGroup_1.loginForm.username.value;
+                var password = elementGroup_1.loginForm.password.value;
+                var verCode = elementGroup_1.loginForm.verCode.value;
+                if (!(0, util_1.checkUsernameOrEmail)(username))
+                    return alert('请输入正确的用户名或邮箱');
+                if (!(0, util_1.checkPassword)(password))
+                    return alert('密码格式为 6-20 位字母、数字和下划线组合');
+                if (verCode.match(/^\s*$/))
+                    return alert('验证码不能为空');
             }
         };
-        elementGroup_1.button.getVerCode.addEventListener('click', eventGroup.getVerCode);
-        elementGroup_1.button.login.addEventListener('click', eventGroup.login);
+        elementGroup_1.loginForm.getVerCode.addEventListener('click', function () {
+            return eventGroup_1.getVerCode(elementGroup_1.loginForm.username.value, elementGroup_1.loginForm.getVerCode, true);
+        });
+        elementGroup_1.loginForm.login.addEventListener('click', eventGroup_1.login);
+        elementGroup_1.registerForm.getVerCode.addEventListener('click', function () {
+            return eventGroup_1.getVerCode(elementGroup_1.registerForm.email.value, elementGroup_1.registerForm.getVerCode, false);
+        });
+        elementGroup_1.registerForm.register.addEventListener('click', eventGroup_1.login);
     }
 };
 exports.routeLogin = routeLogin;
@@ -6765,7 +6841,7 @@ function navBarWithBack(router) {
 },{}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkPassword = exports.checkUsername = exports.checkEmail = void 0;
+exports.checkUsernameOrEmail = exports.checkPassword = exports.checkUsername = exports.checkEmail = void 0;
 /** 校验邮箱 */
 function checkEmail(email) {
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -6784,5 +6860,10 @@ function checkPassword(password) {
     return passwordRegex.test(password);
 }
 exports.checkPassword = checkPassword;
+/** 校验用户名或邮箱 */
+function checkUsernameOrEmail(usernameOrEmail) {
+    return checkUsername(usernameOrEmail) || checkEmail(usernameOrEmail);
+}
+exports.checkUsernameOrEmail = checkUsernameOrEmail;
 
 },{}]},{},[5]);

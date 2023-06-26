@@ -50,27 +50,129 @@ var routeLogin = function (route) {
     if (route.status == 0) {
         route.status = 1;
         var elementGroup_1 = {
-            input: {
-                username: route.dom.querySelector('.input-username'),
-                password: route.dom.querySelector('.input-password'),
-                verCode: route.dom.querySelector('.input-vercode'),
+            /** 登录页表单元素 */
+            loginForm: {
+                /** 登录页用户名或邮箱 */
+                username: subLogin.querySelector('.input-username'),
+                /** 登录页密码 */
+                password: subLogin.querySelector('.input-password'),
+                /** 登录页验证码输入框 */
+                verCode: subLogin.querySelector('.input-vercode'),
+                /** 点击登录 */
+                login: subLogin.querySelector('.click-login'),
+                /** 登录页点击发送验证码 */
+                getVerCode: subLogin.querySelector('.get-vercode')
             },
-            button: {
-                login: route.dom.querySelector('.click-login'),
-                getVerCode: route.dom.querySelector('.get-vercode')
+            /** 注册页表单元素 */
+            registerForm: {
+                /** 注册页用户名 */
+                username: subRegister.querySelector('.input-username'),
+                /** 注册页密码 */
+                password: subRegister.querySelector('.input-password'),
+                /** 注册页密码重复 */
+                repeatPassword: subRegister.querySelector('.input-repeat-password'),
+                /** 注册页邮箱 */
+                email: subRegister.querySelector('.input-email'),
+                /** 注册页验证码输入框 */
+                verCode: subRegister.querySelector('.input-vercode'),
+                /** 点击注册 */
+                register: subRegister.querySelector('.click-register'),
+                /** 注册页点击发送验证码 */
+                getVerCode: subRegister.querySelector('.get-vercode')
             }
         };
-        var eventGroup = {
-            getVerCode: function () {
-                var usernameOremail = elementGroup_1.input.username.value;
-                if (!(0, util_1.checkUsername)(usernameOremail) && !(0, util_1.checkEmail)(usernameOremail))
-                    return alert('请输入正确的用户名或邮箱');
+        var eventGroup_1 = {
+            /**
+             * 发送验证码
+             * @param toInput 发件人地址（用户名或邮箱）
+             * @param button 点击发送验证码的按钮
+             * @param login 是否处于登录页
+             */
+            getVerCode: function (to, button, login) {
+                if (!login && !(0, util_1.checkEmail)(to))
+                    return alert(config_1.errorMessage.email);
+                if (login && !(0, util_1.checkUsernameOrEmail)(to))
+                    return alert(config_1.errorMessage.usernameOrEmail);
+                button.setAttribute('disabled', 'disabled');
+                var timer;
+                var changeStatus = function (second) {
+                    if (second == 0)
+                        return endStatus();
+                    button.innerHTML = "".concat(second, " \u79D2");
+                    timer = setTimeout(function () {
+                        changeStatus(second - 1);
+                    }, 1000);
+                };
+                var endStatus = function () {
+                    button.innerHTML = '获取验证码';
+                    button.removeAttribute('disabled');
+                    clearTimeout(timer);
+                };
+                changeStatus(10);
+                var xhr = new XMLHttpRequest();
+                var params = new URLSearchParams();
+                params.set('to', to);
+                params.set('login', String(login));
+                xhr.open('GET', config_1.apiConfig.getVerCode + '?' + params.toString());
+                xhr.send();
+                xhr.addEventListener('readystatechange', function () {
+                    if (xhr.status == 200 && xhr.readyState == xhr.DONE) {
+                        var res = JSON.parse(xhr.responseText);
+                        if (res.code != 200) {
+                            endStatus();
+                            alert(res.msg);
+                        }
+                    }
+                });
             },
             login: function () {
+                var username = elementGroup_1.loginForm.username.value;
+                var password = elementGroup_1.loginForm.password.value;
+                var verCode = elementGroup_1.loginForm.verCode.value;
+                if (!(0, util_1.checkUsernameOrEmail)(username))
+                    return alert(config_1.errorMessage.usernameOrEmail);
+                if (!(0, util_1.checkPassword)(password))
+                    return alert(config_1.errorMessage.password);
+                if (verCode.match(/^\s*$/))
+                    return alert(config_1.errorMessage.verCode);
+                var xhr = new XMLHttpRequest();
+                var params = new URLSearchParams();
+                params.set('username', username);
+                params.set('password', password);
+                params.set('verCode', verCode);
+                xhr.open('GET', config_1.apiConfig.login + '?' + params.toString());
+                xhr.send();
+                xhr.addEventListener('readystatechange', function () {
+                    if (xhr.status == 200 && xhr.readyState == xhr.DONE) {
+                    }
+                });
+            },
+            register: function () {
+                var username = elementGroup_1.registerForm.username.value;
+                var password = elementGroup_1.registerForm.password.value;
+                var repeatPassword = elementGroup_1.registerForm.repeatPassword.value;
+                var email = elementGroup_1.registerForm.email.value;
+                var verCode = elementGroup_1.registerForm.verCode.value;
+                if (!(0, util_1.checkUsername)(username))
+                    return alert(config_1.errorMessage.username);
+                if (password != repeatPassword)
+                    return alert(config_1.errorMessage.repeatPassword);
+                if (!(0, util_1.checkPassword)(password))
+                    return alert(config_1.errorMessage.password);
+                if (!(0, util_1.checkEmail)(email))
+                    return alert(config_1.errorMessage.email);
+                if (verCode.match(/^\s*$/))
+                    return alert(config_1.errorMessage.verCode);
             }
         };
-        elementGroup_1.button.getVerCode.addEventListener('click', eventGroup.getVerCode);
-        elementGroup_1.button.login.addEventListener('click', eventGroup.login);
+        elementGroup_1.loginForm.getVerCode.addEventListener('click', function () {
+            return eventGroup_1.getVerCode(elementGroup_1.loginForm.username.value, elementGroup_1.loginForm.getVerCode, true);
+        });
+        elementGroup_1.loginForm.login.addEventListener('click', eventGroup_1.login);
+        elementGroup_1.registerForm.getVerCode.addEventListener('click', function () {
+            return eventGroup_1.getVerCode(elementGroup_1.registerForm.email.value, elementGroup_1.registerForm.getVerCode, false);
+        });
+        elementGroup_1.registerForm.register.addEventListener('click', eventGroup_1.register);
     }
 };
 exports.routeLogin = routeLogin;
