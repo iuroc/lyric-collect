@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.routeLogin = exports.checkError = exports.checkSuccess = exports.checkToken = void 0;
 var config_1 = require("../config");
 var util_1 = require("../util");
+var md5 = require("md5");
 /** 校验 Token */
 function checkToken(event) {
     // 初始化页面
@@ -31,7 +32,8 @@ function checkSuccess() {
 exports.checkSuccess = checkSuccess;
 /** 校验失败事件 */
 function checkError() {
-    location.hash = '#/login';
+    if (location.hash.split('/')[1] != 'login')
+        location.hash = '#/login';
     localStorage.removeItem('hasLogin');
 }
 exports.checkError = checkError;
@@ -108,7 +110,7 @@ var routeLogin = function (route) {
                     button.removeAttribute('disabled');
                     clearTimeout(timer);
                 };
-                changeStatus(10);
+                changeStatus(60);
                 var xhr = new XMLHttpRequest();
                 var params = new URLSearchParams();
                 params.set('to', to);
@@ -138,12 +140,18 @@ var routeLogin = function (route) {
                 var xhr = new XMLHttpRequest();
                 var params = new URLSearchParams();
                 params.set('username', username);
-                params.set('password', password);
+                params.set('password', md5(password));
                 params.set('verCode', verCode);
                 xhr.open('GET', config_1.apiConfig.login + '?' + params.toString());
                 xhr.send();
                 xhr.addEventListener('readystatechange', function () {
                     if (xhr.status == 200 && xhr.readyState == xhr.DONE) {
+                        var res = JSON.parse(xhr.responseText);
+                        if (res.code == 200) {
+                            checkSuccess();
+                            return;
+                        }
+                        alert(res.msg);
                     }
                 });
             },

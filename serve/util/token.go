@@ -20,8 +20,17 @@ func CheckToken(conn *sql.DB, token string) bool {
 	return true
 }
 
-// 校验来自请求的 Token
-func CheckTokenFromRequest(conn *sql.DB, r *http.Request) bool {
+// 校验来自请求的 Token，自动返回错误响应
+func CheckTokenFromRequest(conn *sql.DB, w http.ResponseWriter, r *http.Request) bool {
 	token := GetCookieValue(r.Cookies(), "token")
-	return CheckToken(conn, token)
+	if !CheckToken(conn, token) {
+		res := MakeRes(
+			http.StatusUnauthorized,
+			http.StatusText(http.StatusUnauthorized),
+			nil,
+		)
+		w.Write([]byte(res))
+		return false
+	}
+	return true
 }

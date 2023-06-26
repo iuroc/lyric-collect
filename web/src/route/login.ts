@@ -2,7 +2,7 @@ import { RouteEvent } from 'apee-router'
 import { apiConfig, errorMessage } from '../config'
 import { AjaxRes } from '../types'
 import { checkEmail, checkPassword, checkUsername, checkUsernameOrEmail } from '../util'
-
+import * as md5 from 'md5'
 /** 校验 Token */
 export function checkToken(event?: HashChangeEvent) {
     // 初始化页面
@@ -32,7 +32,7 @@ export function checkSuccess() {
 
 /** 校验失败事件 */
 export function checkError() {
-    location.hash = '#/login'
+    if (location.hash.split('/')[1] != 'login') location.hash = '#/login'
     localStorage.removeItem('hasLogin')
 }
 
@@ -107,7 +107,7 @@ export const routeLogin: RouteEvent = (route) => {
                     button.removeAttribute('disabled')
                     clearTimeout(timer)
                 }
-                changeStatus(10)
+                changeStatus(60)
                 const xhr = new XMLHttpRequest()
                 const params = new URLSearchParams()
                 params.set('to', to)
@@ -134,13 +134,18 @@ export const routeLogin: RouteEvent = (route) => {
                 const xhr = new XMLHttpRequest()
                 const params = new URLSearchParams()
                 params.set('username', username)
-                params.set('password', password)
+                params.set('password', md5(password))
                 params.set('verCode', verCode)
                 xhr.open('GET', apiConfig.login + '?' + params.toString())
                 xhr.send()
                 xhr.addEventListener('readystatechange', () => {
                     if (xhr.status == 200 && xhr.readyState == xhr.DONE) {
-                        
+                        const res = JSON.parse(xhr.responseText) as AjaxRes
+                        if (res.code == 200) {
+                            checkSuccess()
+                            return
+                        }
+                        alert(res.msg)
                     }
                 })
             },

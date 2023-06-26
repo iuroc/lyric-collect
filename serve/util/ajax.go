@@ -1,3 +1,4 @@
+// 工具模块
 package util
 
 import (

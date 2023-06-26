@@ -1,3 +1,4 @@
+// 数据库模块
 package database
 
 import (

@@ -27,6 +27,7 @@ func main() {
 	http.HandleFunc("/api/getList", route.GetList)
 	http.HandleFunc("/api/checkToken", route.CheckToken)
 	http.HandleFunc("/api/getVerCode", route.GetVerCode)
+	http.HandleFunc("/api/login", route.Login)
 	fmt.Println("服务器已经启动 👉 http://127.0.0.1:8080")
 	http.ListenAndServe(":8080", nil)
 }

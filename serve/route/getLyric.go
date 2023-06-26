@@ -40,7 +40,7 @@ func GetLyric(w http.ResponseWriter, r *http.Request) {
 			Name:   jsonData.Data.SongInfo.Name,
 			Id:     jsonData.Data.SongInfo.Id,
 			Artist: jsonData.Data.SongInfo.Artist,
-			Cover:    jsonData.Data.SongInfo.Pic,
+			Cover:  jsonData.Data.SongInfo.Pic,
 			Album:  jsonData.Data.SongInfo.Album,
 		},
 	}
@@ -65,7 +65,7 @@ type jsonType struct {
 
 type newResponse struct {
 	LyricList []lyricItem `json:"lyricList"`
-	MusicInfo  songInfo    `json:"musicInfo"`
+	MusicInfo songInfo    `json:"musicInfo"`
 }
 
 type lyricItem struct {
@@ -77,6 +77,6 @@ type songInfo struct {
 	Name   string `json:"name"`
 	Id     string `json:"id"`
 	Artist string `json:"artist"`
-	Cover    string `json:"cover"`
+	Cover  string `json:"cover"`
 	Album  string `json:"album"`
 }

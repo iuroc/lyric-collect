@@ -24,7 +24,7 @@ func GetVerCode(w http.ResponseWriter, r *http.Request) {
 			w.Write(util.MakeErr("请输入正确的用户名或邮箱"))
 			return
 		}
-		email = getEmailByUsernameOrEmail(conn, email)
+		_, email := getUserInfo(conn, email)
 		if email == "" {
 			w.Write(util.MakeErr("当前用户没有注册"))
 			return
@@ -60,14 +60,17 @@ func checkSendAllow(conn *sql.DB, email string) bool {
 	return count == 0
 }
 
-// 通过【用户名或邮箱】获取邮箱
-func getEmailByUsernameOrEmail(conn *sql.DB, usernameOrEmail string) string {
+// 通过【用户名或邮箱】获取【用户名和邮箱】
+func getUserInfo(conn *sql.DB, usernameOrEmail string) (string, string) {
 	var email string
-	err := conn.QueryRow("SELECT email FROM "+os.Getenv("mysql_table_prefix")+"user WHERE username = ? OR email = ?", usernameOrEmail, usernameOrEmail).Scan(&email)
+	var username string
+	err := conn.QueryRow("SELECT username, email FROM "+os.Getenv("mysql_table_prefix")+"user WHERE username = ? OR email = ?",
+		usernameOrEmail, usernameOrEmail,
+	).Scan(&username, &email)
 	if err != nil {
-		return ""
+		return "", ""
 	}
-	return email
+	return username, email
 }
 
 // 发送验证码，并创建数据库记录

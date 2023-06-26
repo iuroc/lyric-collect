@@ -10,9 +10,7 @@ import (
 func CheckToken(w http.ResponseWriter, r *http.Request) {
 	conn := database.GetConn()
 	defer conn.Close()
-	if result := util.CheckTokenFromRequest(conn, r); !result {
-		res := util.MakeRes(http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized), nil)
-		w.Write([]byte(res))
+	if !util.CheckTokenFromRequest(conn, w, r) {
 		return
 	}
 	w.Write(util.MakeSuc("校验成功", nil))
